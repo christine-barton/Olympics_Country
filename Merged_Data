@@ -1,0 +1,54 @@
+#Merged Data
+#Group 26
+
+#Clear contents
+rm(list=ls())
+
+#Read olympics dataset
+olympics<- read.csv("2016_olympics.csv",
+                    header = TRUE,
+                    sep = ",",
+                    na.strings = c("NA", "Unknown", "", " ", "N/A"))
+
+
+#View olympics dataset
+View(olympics)
+
+#Read countries dataset
+countries<- read.csv("noc_regions.csv",
+                     header = TRUE,
+                     sep = ",",
+                     na.strings = c("NA", "Unknown", "", " ", "N/A"))
+
+countries<- subset(countries, select = -c(notes))
+
+View(countries)
+
+#Number of countries
+table(countries$region)
+
+#Horizontally merge olympics and countries
+olympics_countries<- merge(olympics, countries, by="NOC")
+
+#reorder columns
+olympics_countries<-olympics_countries[, c(2:14, 1,15:16)]
+
+#Rename region column
+names(olympics_countries)[names(olympics_countries)=="region"]<-"Country"
+View(olympics_countries)
+
+#read in new data file from web scraping 
+GDP_Population<- read.csv("GDP-Population.csv",
+                          header = TRUE,
+                          sep = ",")
+GDP_Population<- subset(GDP_Population, select = -c(X))
+GDP_Population<- subset(GDP_Population, select = -c(Trillion.vs.Billion))
+
+View(GDP_Population)
+
+olympics_allfeatures<- merge(olympics_countries, GDP_Population, by= "Country")
+olympics_allfeatures<- subset(olympics_allfeatures, select = -c(GDP2))
+
+#View olympic features
+View(olympics_allfeatures)
+write.csv(olympics_allfeatures, "olympics_allfeatures.csv")
