@@ -1,0 +1,120 @@
+#Group 26
+#Web Scraping
+
+#Web scraping of countries information
+library(xml2)
+pages <- list('afghanistan')
+base_url<- "https://www.infoplease.com/world/countries/"
+
+Country <-character(0)
+Population <-character(0)
+
+#Web scraping of countries information
+library(xml2)
+pages <- list('Afghanistan',
+              'Albania',
+              'Algeria',
+              'Argentina',
+              'Azerbaijan',
+              'Bahamas',
+              'Belarus',
+              'Brazil', #in trillion
+              'Burundi',
+              'Croatia',
+              'Cuba',
+              'Czech-Republic',
+              'Denmark',
+              'Ethiopia',
+              'Fiji',
+              'Finland', 
+              'France', #trillion
+              'Georgia',
+              'Greece',
+              'Grenada',
+              'India', #trillion
+              'Indonesia', #trillion
+              'Iran',
+              'Ireland',
+              'Israel',
+              'Italy', #trillion, 0
+              'Japan',
+              'Jordan',
+              'Kenya',
+              'Latvia',
+              'Lithuania',
+              'Malaysia',
+              'Mexico',
+              'Mongolia',
+              'Morocco',
+              'Netherlands',
+              'New-Zealand',
+              'Nigeria',
+              'Philippines',
+              'Puerto-Rico',
+              'Qatar',
+              'Slovakia',
+              'Slovenia',
+              'South-Africa',
+              'Spain', #in trillion
+              'Sweden',
+              'Switzerland',
+              'Taiwan',
+              'Tajikistan',
+              'Thailand',
+              'Tunisia',
+              'Turkey', #in trillion
+              'Ukraine',
+              'United-Arab-Emirates',
+              'united-kingdom', #in trillion 
+              'united-states',
+              'Uzbekistan',
+              'Venezuela',
+              'Vietnam')
+
+base_url<- "https://www.infoplease.com/world/countries/"
+
+Country <-character(0)
+Population <-character(0)
+
+#trimws(Population)
+#Empty Dataframe
+countries_df <-data.frame()
+
+for (page in pages) {
+  #Construct full url
+  #Sys.sleep(10)
+  url <- paste(base_url, page, sep = "")
+  
+  # Scrape page
+  p <- read_html(url)
+  
+  # Scrape Country
+  Country<- xml_text(xml_find_all(p, "//h1[@class='page-title']"))
+  
+  # Scrape Population
+  Population<-xml_text(xml_find_all(p, "//div[@class='country-facts-figures']/ul/li/p"))[grepl("Population",xml_text(xml_find_all(p, "//div[@class='country-facts-figures']/ul/li/p")))]
+  
+  #Removes non nummeric values
+  Population<- gsub("[,]","",Population)
+  
+  #Removes everything outside of what is in between the periods
+  Population<-gsub("^[^:]*.([^(]+).*", "\\1",Population)
+  Population<- trimws(Population)
+  
+  #Scrape GDP 
+  GDP<- xml_text(xml_find_all(p, "//div[@class='country-facts-figures']/ul/li/p"))[grepl("Economic summary",xml_text(xml_find_all(p, "//div[@class='country-facts-figures']/ul/li/p")))]
+  #Keep only GDP
+  GDP<-gsub("^[^:]*.([^;]+).*", "\\1",GDP)
+  #remove non-numeric
+  GDP<- gsub("[^0-9\\.]","",GDP)
+  #remove things before common
+  GDP<-gsub("^.*?\\.","", GDP)
+  
+  page_countries<- data.frame(Country, Population, GDP)
+  countries_df<- rbind(countries_df, page_countries)
+}
+
+View(countries_df)  
+
+#write file to transform GDP so it is all in the same unit
+write.csv(countries_df, "country.csv")
