@@ -34,7 +34,9 @@ You need to have R Studio and the following R packages downloaded:
 ## Usage
 You can use the code to get the merged dataset of the Olympic information and webscraped country information. You can then use it to analyze whatever you would like and use the Descriptive Analysis R code as an example of how you can use it. 
 
-First run the merged data r script and then the web scraped file. Finally run the descriptive analysis and use the files however you would like. 
+1. First download everything in the GitHub. 
+2. Then run the merged data r script and then the web scraped file. 
+3. Finally run the descriptive analysis and use the files however you would like. 
 
 
 ## Project Status
