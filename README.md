@@ -22,7 +22,7 @@
 ## Features
 - 1. Create Box Plot Graph with Medal and GDP of the Countries
 - 2. Create a Bar Graph with Medal Count and Country Population
-- 3. Create a Graph with whatever two features you want to get insights
+- 3. Create a Graph with whatever two features you want to get insights from
 
 
 ## Setup
